@@ -1,4 +1,7 @@
-﻿using DAL.EF;
+﻿using BLL.Configuration;
+using BLL.Interfaces;
+using BLL.Services;
+using DAL.EF;
 using DAL.EF.Auth;
 using DAL.Entities;
 using DAL.Interfaces;
@@ -23,13 +26,21 @@ namespace Api.Configuration
 
             builder.Services.AddDbContext<AuthDbContext>(options => options.UseSqlServer(identityDbConnectionString));
 
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+            builder.Services.AddAutoMapper(typeof(APIAutoMapperProfile));
+            
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            builder.Services.AddScoped<IRepository<Article>, Repository<Article>>();
+            builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
             builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
             builder.Services.AddScoped<IRepository<Source>, Repository<Source>>();
             builder.Services.AddScoped<IRepository<Picture>, Repository<Picture>>();
-
+            builder.Services.AddScoped<IArticleService, ArticleService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            
+    
             
             return builder;
         }

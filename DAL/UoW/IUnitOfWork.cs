@@ -7,7 +7,7 @@ namespace DAL.UoW
 {
     public interface IUnitOfWork
     {
-        IRepository<Article> ArticleRepository { get;  }
+        IArticleRepository ArticleRepository { get;  }
         IRepository<Category> CategoryRepository { get;  }
         IRepository<Picture> PictureRepository { get;  }
         IRepository<Source> SourceRepository { get;  }

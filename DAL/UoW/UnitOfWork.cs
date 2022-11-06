@@ -12,12 +12,12 @@ namespace DAL.UoW
             private readonly PlatformDbContext _context;
 
 
-            public IRepository<Article> ArticleRepository { get; }
+            public IArticleRepository ArticleRepository { get; }
             public IRepository<Category> CategoryRepository { get; }
             public IRepository<Picture> PictureRepository { get; }
             public IRepository<Source> SourceRepository { get; }
 
-            public UnitOfWork(PlatformDbContext context, IRepository<Article> articleRepository,
+            public UnitOfWork(PlatformDbContext context, IArticleRepository articleRepository,
                 IRepository<Category> categoryRepository, IRepository<Picture> pictureRepository,
                 IRepository<Source> sourceRepository)
             {

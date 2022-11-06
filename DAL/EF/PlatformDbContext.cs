@@ -22,7 +22,7 @@ namespace DAL.EF
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=CryptoPlatformDb;Trusted_Connection=True");
+            optionsBuilder.UseSqlServer("Server=.;Database=CryptoPlatformDb;Trusted_Connection=True;Encrypt=False;");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

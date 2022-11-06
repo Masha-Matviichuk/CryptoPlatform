@@ -15,7 +15,7 @@ namespace DAL.EF.Auth
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=UserIdentityDb;Trusted_Connection=True");
+            optionsBuilder.UseSqlServer("Server=.;Database=UserIdentityDb;Trusted_Connection=True;Encrypt=False;");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
