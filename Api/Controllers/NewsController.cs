@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Api.Models;
 using Api.Models.Paging;
@@ -81,16 +82,36 @@ namespace Api.Controllers
         
         // PUT api/news/add_like
         [HttpPut("add_like")]
-        public async Task<IActionResult> AddLike(string id)
+        public async Task<IActionResult> AddLike(string articleId)
         {
-
+            if (string.IsNullOrEmpty(articleId))
+            {
+                return BadRequest("Not valid id!");
+            }
+            string? userId = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            var result = await _articleService.AddLikeAsync(articleId, userId);
+            return Ok(result);
         }
         
         // PUT api/news/add_dislike
         [HttpPut("add_dislike")]
-        public async Task<IActionResult> AddDislike(string id)
+        public async Task<IActionResult> AddDislike(string articleId)
         {
-
+            if (string.IsNullOrEmpty(articleId))
+            {
+                return BadRequest("Not valid id!");
+            }
+            string? userId = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            var result = await _articleService.AddDislikeAsync(articleId, userId);
+            return Ok(result);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Api.Models;
 using AutoMapper;
@@ -8,6 +9,8 @@ using BLL.Services.Strategy;
 using DAL.Entities;
 using DAL.Pagination;
 using DAL.UoW;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
@@ -15,9 +18,11 @@ namespace BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ArticleService(UserManager<User> userManager, IUnitOfWork unitOfWork, IMapper mapper)
         {
+            _userManager = userManager;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -68,14 +73,56 @@ namespace BLL.Services
             return _mapper.Map<ArticleDto>(article);
         }
 
-        public Task<ArticleDto> AddLikeAsync(string articleId)
+        public async Task<ArticleDto> AddLikeAsync(string articleId, string userId)
         {
-            throw new NotImplementedException();
+            if (articleId == null)
+                throw new ArgumentNullException(nameof(articleId),"This id is null");
+            if (userId == null)
+                throw new ArgumentNullException(nameof(userId),"This id is null");
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var article = await _unitOfWork.ArticleRepository.GetByIdAsync(articleId);
+            if (user.UserLikes.Contains(articleId))
+            {
+                article.LikesCount -= 1;
+            } else if (!user.UserLikes.Contains(articleId) && !user.UserDislikes.Contains(articleId))
+            {
+                article.LikesCount += 1;
+            }else if (!user.UserLikes.Contains(articleId) && user.UserDislikes.Contains(articleId))
+            {
+                article.LikesCount += 1;
+                article.DislikesCount -= 1;
+            }
+            
+            var updated = await _unitOfWork.ArticleRepository.UpdateAsync(article);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ArticleDto>(updated);
         }
 
-        public Task<ArticleDto> AddDislikeAsync(string articleId)
+        public async Task<ArticleDto> AddDislikeAsync(string articleId, string userId)
         {
-            throw new NotImplementedException();
+            if (articleId == null)
+                throw new ArgumentNullException(nameof(articleId),"This id is null");
+            if (userId == null)
+                throw new ArgumentNullException(nameof(userId),"This id is null");
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var article = await _unitOfWork.ArticleRepository.GetByIdAsync(articleId);
+            if (user.UserDislikes.Contains(articleId))
+            {
+                article.DislikesCount -= 1;
+            } else if (!user.UserDislikes.Contains(articleId) && !user.UserLikes.Contains(articleId))
+            {
+                article.DislikesCount += 1;
+            }else if (!user.UserDislikes.Contains(articleId) && user.UserLikes.Contains(articleId))
+            {
+                article.DislikesCount += 1;
+                article.LikesCount -= 1;
+            }
+            
+            var updated = await _unitOfWork.ArticleRepository.UpdateAsync(article);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ArticleDto>(updated);
         }
     }
 }

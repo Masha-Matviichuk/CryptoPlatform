@@ -10,8 +10,8 @@ namespace BLL.Interfaces
         Task<PagedList<ArticleDto>> GetArticlesByFilterAsync(int pageIndex, int pageSize, FilterOptions filterOptions);
         Task<PagedList<ArticleDto>> GetAllArticlesAsync(int pageIndex, int pageSize);
         Task<ArticleDto> GetArticleByIdAsync(string articleId);
-        Task<ArticleDto> AddLikeAsync(string articleId);
-        Task<ArticleDto> AddDislikeAsync(string articleId);
+        Task<ArticleDto> AddLikeAsync(string articleId, string userId);
+        Task<ArticleDto> AddDislikeAsync(string articleId, string userId);
         //Task<PagedList<ArticleDto>> DeleteArticleAsync(int pageIndex, int pageSize, string categoryId);
     }
 }
